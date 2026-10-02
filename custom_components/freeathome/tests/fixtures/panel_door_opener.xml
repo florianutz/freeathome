@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project timeStamp="20261002" sessionId="1234" type="full" mrhaVersion="2.6.0" mrhaBuild="1234">
+ <floorplan>
+  <floor name="Ground Floor" uid="00">
+   <room name="Hallway" uid="00"/>
+  </floor>
+ </floorplan>
+ <strings>
+  <string nameId="007A">Türöffner 1</string>
+  <string nameId="007B">Türöffner 2</string>
+  <string nameId="007E">Voreingestellte Tür</string>
+  <string nameId="7000">free@homeTouch 7"</string>
+ </strings>
+ <devices>
+  <device serialNumber="ABB600012345" deviceId="FFFF" nameId="7000" softwareVersion="2.0.0" commissioningState="ready">
+   <attribute name="displayName">Control panel</attribute>
+   <attribute name="floor">00</attribute>
+   <attribute name="room">00</attribute>
+   <channels>
+    <channel mask="FFFFFFFF" nameId="007A" i="ch0010" cid="ABB601C0">
+     <attribute name="displayName">Main door opener</attribute>
+     <attribute name="functionId">1a</attribute>
+     <inputs>
+      <dataPoint pairingId="0002" i="idp0000">
+       <value>0</value>
+      </dataPoint>
+     </inputs>
+     <outputs>
+      <dataPoint pairingId="0100" i="odp0000" full="false">
+       <value>0</value>
+      </dataPoint>
+     </outputs>
+     <parameters>
+      <parameter i="pm0000">
+       <value>5</value>
+      </parameter>
+     </parameters>
+     <scenes/>
+    </channel>
+    <channel mask="FFFFFFFF" nameId="007B" i="ch0011" cid="ABB601C0">
+     <attribute name="functionId">1a</attribute>
+     <inputs>
+      <dataPoint pairingId="FFFF" i="idp0000">
+       <value>0</value>
+      </dataPoint>
+     </inputs>
+     <outputs>
+      <dataPoint pairingId="FFFF" i="odp0000" full="false">
+       <value>0</value>
+      </dataPoint>
+     </outputs>
+     <parameters/>
+     <scenes/>
+    </channel>
+    <channel mask="FFFFFFFF" nameId="007E" i="ch0014" cid="ABB601C0">
+     <attribute name="functionId">1a</attribute>
+     <inputs>
+      <dataPoint pairingId="0002" i="idp0000">
+       <value>0</value>
+      </dataPoint>
+     </inputs>
+     <outputs>
+      <dataPoint pairingId="0100" i="odp0000" full="false">
+       <value>0</value>
+      </dataPoint>
+     </outputs>
+     <parameters>
+      <parameter i="pm0000">
+       <value>5</value>
+      </parameter>
+     </parameters>
+     <scenes/>
+    </channel>
+   </channels>
+  </device>
+ </devices>
+</project>

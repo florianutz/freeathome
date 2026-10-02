@@ -52,7 +52,8 @@ from .devices.fah_lock import FahLock
 from .const import (
     NAME_IDS_TO_BINARY_SENSOR_SUFFIX,
     FUNCTION_IDS_AIR_QUALITY_SENSOR,
-    FUNCTION_IDS_WEATHER_STATION
+    FUNCTION_IDS_WEATHER_STATION,
+    FUNCTION_IDS_DOOR_OPENER,
     )
 
 from .messagereader import MessageReader
@@ -860,8 +861,14 @@ class Client(slixmpp.ClientXMPP):
                     room_id = device_room_id if channel_room_id == '' or same_location == 'true' else channel_room_id
                     LOG.debug('Device floor/room ID %s/%s, channel floor/room ID %s/%s', device_floor_id, device_room_id, channel_floor_id, channel_room_id)
 
-                    # Use device display name if not configured on channel
-                    display_name = channel_display_name if channel_display_name != '' else device_display_name
+                    # Use channel display name if configured; for door openers without channel display name,
+                    # use specific door opener name from names.json (e.g. 'Türöffner 1', 'Voreingestellte Tür')
+                    if channel_display_name != '':
+                        display_name = channel_display_name
+                    elif function_id in FUNCTION_IDS_DOOR_OPENER and channel_name_id_hex in names:
+                        display_name = names[channel_name_id_hex]
+                    else:
+                        display_name = device_display_name
 
                     # Use serial number and channel if no name is configured
                     if display_name == '':

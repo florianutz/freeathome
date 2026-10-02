@@ -25,13 +25,23 @@ class FahLock(FahDevice):
                         ]
                     }
 
+    async def open(self):
+        """Trigger the door opener pulse."""
+        if PID_TIMED_START_STOP in self._datapoints:
+            dp = self._datapoints[PID_TIMED_START_STOP]
+            await self.client.set_datapoint(self.serialnumber, self.channel_id, dp, '1')
+        else:
+            LOG.warning("Door opener %s (%s) missing timed start/stop datapoint", self.name, self.lookup_key)
+
     async def lock(self):
-        dp = self._datapoints[PID_TIMED_START_STOP]
-        await self.client.set_datapoint(self.serialnumber, self.channel_id, dp, '0')
+        if PID_TIMED_START_STOP in self._datapoints:
+            dp = self._datapoints[PID_TIMED_START_STOP]
+            await self.client.set_datapoint(self.serialnumber, self.channel_id, dp, '0')
+        else:
+            LOG.warning("Door opener %s (%s) missing timed start/stop datapoint", self.name, self.lookup_key)
 
     async def unlock(self):
-        dp = self._datapoints[PID_TIMED_START_STOP]
-        await self.client.set_datapoint(self.serialnumber, self.channel_id, dp, '1')
+        await self.open()
 
     def update_datapoint(self, dp, value):
         """Receive updated datapoint."""
@@ -40,7 +50,7 @@ class FahLock(FahDevice):
             LOG.info("lock device %s (%s) dp %s state %s", self.name, self.lookup_key, dp, value)
 
         else:
-            LOG.info("light device %s (%s) unknown dp %s value %s", self.name, self.lookup_key, dp, value)
+            LOG.info("lock device %s (%s) unknown dp %s value %s", self.name, self.lookup_key, dp, value)
             
     def update_parameter(self, param, value):
         LOG.debug("Not yet implemented")

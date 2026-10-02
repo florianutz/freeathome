@@ -4,7 +4,7 @@
 Free@Home component for Home Assistant
 
 This is a component for Free @ Home from Busch-Jaeger.
-Lights, light groups, scenes, covers, binary sensors, climate devices and the sensors of the weather station wil show up in Home Assistant. 
+Lights, light groups, scenes, covers, binary sensors, climate devices, door openers (buttons and locks) and the sensors of the weather station will show up in Home Assistant. 
 
 ## Installation
 

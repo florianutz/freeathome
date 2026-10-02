@@ -58,6 +58,10 @@ class TestLock:
         await lock.unlock()
         client.set_datapoint.assert_called_once_with("ABB654612345", "ch0010", "idp0000", "1")
 
+        client.set_datapoint.reset_mock()
+        await lock.open()
+        client.set_datapoint.assert_called_once_with("ABB654612345", "ch0010", "idp0000", "1")
+
         # Test device being turned off
         await client.update_devices(load_fixture("unknown_update_lock.xml"))
         assert lock.state == '1'

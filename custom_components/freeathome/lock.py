@@ -1,8 +1,22 @@
 """ Support for Free@Home Lock through 7 inch panel """
 import logging
-from homeassistant.components.lock import (LockEntity)
+try:
+    from homeassistant.components.lock import LockEntity, LockEntityFeature
+    SUPPORT_OPEN = LockEntityFeature.OPEN
+except (ImportError, AttributeError):
+    try:
+        from homeassistant.components.lock import LockEntity
+        SUPPORT_OPEN = 1
+    except ImportError:
+        class LockEntity:
+            """Fallback for testing without homeassistant package."""
+            pass
+        SUPPORT_OPEN = 1
 
-from .const import DOMAIN
+try:
+    from .const import DOMAIN
+except ImportError:
+    from const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -28,6 +42,11 @@ class FreeAtHomeLock(LockEntity):
         self.lock_device = device
         self._name = self.lock_device.name
         self._is_locked = (self.lock_device.state == '0')
+
+    @property
+    def supported_features(self):
+        """Flag supported features."""
+        return SUPPORT_OPEN
 
     @property
     def name(self):
@@ -71,4 +90,8 @@ class FreeAtHomeLock(LockEntity):
 
     async def async_unlock(self, **kwargs):
         """Unlock the device."""
-        await self.lock_device.unlock()    
+        await self.lock_device.unlock()
+
+    async def async_open(self, **kwargs):
+        """Open the door opener."""
+        await self.lock_device.open()    
