@@ -6,6 +6,7 @@ from .fah_device import FahDevice
 from ..const import (
         FUNCTION_IDS_BINARY_SENSOR,
         FUNCTION_IDS_DIMMING_STATUS,
+        FUNCTION_IDS_DOOR_CALL_SENSOR,
         FUNCTION_IDS_WEATHER_STATION,
         PID_SWITCH_ON_OFF,
         PID_TIMED_START_STOP,
@@ -201,6 +202,16 @@ class FahBinarySensor(FahDevice):
     def is_co_sensor(self):
         """Return true if device is a dimmer"""
         return PID_CO_ALARM_ACTIVE in self._datapoints
+
+    def is_door_call_sensor(self):
+        """Return true if device is a door call sensor"""
+        if self._function_id is None:
+            return False
+        try:
+            fid = int(self._function_id, 16) if isinstance(self._function_id, str) else self._function_id
+            return fid in FUNCTION_IDS_DOOR_CALL_SENSOR
+        except (ValueError, TypeError):
+            return False
 
     def supports_dimming_status(self):
         """Return true if this channel provides two-sided dimming actions."""
