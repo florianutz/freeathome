@@ -54,6 +54,8 @@ class FahBinarySensor(FahDevice):
         self._cyclic_last = {}
         self._datapoint_updated_cbs = []
         self._pending_datapoint_events = []
+        if self.is_door_call_sensor():
+            self.state = '0'
 
     def pairing_ids(function_id=None):
         if function_id in FUNCTION_IDS_BINARY_SENSOR:
@@ -155,8 +157,12 @@ class FahBinarySensor(FahDevice):
                 "direction": direction,
                 }
 
-    def update_datapoint(self, dp, value):
+    def update_datapoint(self, dp, value, initializing=False):
         """Receive updated datapoint."""
+        if initializing and self.is_door_call_sensor():
+            self.state = '0'
+            return
+
         if self._datapoints.get(PID_WINDOW_DOOR_POSITION) == dp:
             self.window_position = value
             LOG.info("binary sensor %s (%s) dp %s state %s", self.name, self.lookup_key, dp, value)

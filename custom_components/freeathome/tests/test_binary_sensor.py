@@ -416,6 +416,33 @@ class TestDoorCallCyclicRepeat:
             await sensor.after_update()
         assert len(events) == 2
 
+    async def test_door_call_initial_config_value_one_stays_free_and_first_ring_triggers(self):
+        sensor = self.make_sensor()
+        assert sensor.state == "0"
+
+        events = []
+        async def callback(device, event):
+            events.append(event)
+        sensor.register_datapoint_updated_cb(callback)
+
+        # Simulate initial getAll config load where SysAP persisted '1' from a previous ring
+        with patch("fah.devices.fah_binary_sensor.time.monotonic", return_value=1000.0):
+            sensor.update_datapoint("odp0000", "1", initializing=True)
+            await sensor.after_update()
+
+        assert sensor.state == "0"
+        assert len(events) == 0
+
+        # First real ring after HA startup must transition from '0' to '1' and fire event
+        with patch("fah.devices.fah_binary_sensor.time.monotonic", return_value=1000.0 + CYCLIC_PERIOD):
+            sensor.update_datapoint("odp0000", "1")
+            await sensor.after_update()
+
+        assert sensor.state == "1"
+        assert len(events) == 1
+        assert events[0]["state"] is True
+        assert events[0]["command"] == "pressed"
+
 
 class TestCyclicRepeatFilter:
     """Cyclic keep-alive repetitions must not be reported as new events."""

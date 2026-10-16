@@ -31,6 +31,8 @@ class FreeAtHomeBinarySensor(BinarySensorEntity):
     def __init__(self, device, hass):
         self.binary_device = device
         self._name = self.binary_device.name
+        if self.binary_device.is_door_call_sensor():
+            self.binary_device.state = '0'
         self._state = (self.binary_device.state == '1')
         self._hass = hass
         self._reset_task = None
@@ -111,6 +113,9 @@ class FreeAtHomeBinarySensor(BinarySensorEntity):
 
         async def after_update_callback(device):
             """Call after device was updated."""
+            if self.binary_device.is_door_call_sensor() and self._state and self.binary_device.state == '1':
+                self._state = False
+                self.async_write_ha_state()
             await self.async_update_ha_state(True)
             if self.binary_device.is_door_call_sensor() and self._state:
                 if self._reset_task and not self._reset_task.done():
