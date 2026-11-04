@@ -1,6 +1,6 @@
 """ Support for Free@Home Lock through 7 inch panel """
 import logging
-from homeassistant.components.lock import (LockEntity)
+from homeassistant.components.lock import LockEntity, LockEntityFeature
 
 from .const import DOMAIN
 
@@ -20,6 +20,7 @@ async def async_setup_entry(hass, config_entry, async_add_devices, discovery_inf
 
 class FreeAtHomeLock(LockEntity):
     ''' Interface to the lock entities of Free@Home '''
+    _attr_supported_features = LockEntityFeature.OPEN
     _name = ''
     lock_device = None
     _state = None
@@ -71,4 +72,8 @@ class FreeAtHomeLock(LockEntity):
 
     async def async_unlock(self, **kwargs):
         """Unlock the device."""
-        await self.lock_device.unlock()    
+        await self.lock_device.unlock()
+
+    async def async_open(self, **kwargs):
+        """Open the door latch."""
+        await self.lock_device.unlock()

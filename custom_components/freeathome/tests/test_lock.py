@@ -72,3 +72,17 @@ class TestLock:
         lock = next((el for el in devices if el.lookup_key == "ABB654612345/ch0010"))
 
         assert lock.name == "Door opener"
+
+    async def test_lock_fallback_channel_name(self, _):
+        client = get_client()
+        xml = (
+            load_fixture("unknown_panel.xml")
+            .replace('<attribute name="displayName">Door opener</attribute>', "")
+            .replace('<string nameId="FFF1">free@homeTouch 7&quot;</string>', "")
+        )
+        with patch.object(Client, "get_config", return_value=xml):
+            await client.find_devices(True)
+
+        lock = client.get_devices("lock")[0]
+        assert lock.name == "Türöffner 1 (room1)"
+
